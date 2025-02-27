@@ -1,0 +1,2 @@
+const data = {  name: 'John Doe',   age: 30};
+ This is a new line added in this file
