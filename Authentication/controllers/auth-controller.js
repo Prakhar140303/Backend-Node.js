@@ -1,6 +1,8 @@
 // register controller
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const registerUser = async(req,res)=>{
     try{
         // extract user information for our req body
@@ -51,12 +53,42 @@ const registerUser = async(req,res)=>{
 // login controller
 const loginUser = async(req, res)=>{
     try{
-    
+        const {username,password} = req.body;
+        // find if the user is exist or not 
+        const user = await User.findOne({username});
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: 'Invalid usename, User not found'
+            });
+        }
+        const isPasswordMatch =  await bcrypt.compare(password,user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid  password'
+            });
+
+        }
+        //
+        const accessToken =  jwt.sign({
+            userId: user._id,
+            username : user.username,
+            role: user.role
+        },process.env.JWT,{
+            expiresIn : '60m'
+        })
+        res.status(200).json({
+            success: true,
+            message: 'User login successful',
+            accessToken: accessToken,
+        })
+
     }catch(e){
         console.log(e); 
         res.status(400).json({
             success: false,
-            message: 'Registration failed > Please try again',
+            message: 'Login Failed',
         })  
     }
 }
