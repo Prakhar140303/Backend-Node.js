@@ -1,11 +1,11 @@
-const  image = require('../models/image')
+const  Image = require('../models/image')
 const  {uploadToCloudinary}= require('../helper/cloudinary_helper')
 const uploadImageController = async(req, res )=>{
     try{
         //  check if file is mising in req object
         console.log('REQ.FILE:', req.file); 
         console.log('REQ.BODY:', req.body);
-        
+
         if(!req.file){
             return res.status(400).json({
                 success : false,
@@ -35,6 +35,32 @@ const uploadImageController = async(req, res )=>{
         })
     }
 }
+const fetchingImageController = async (req,res)=>{
+    try{
+        const image = await Image.find({
+            publicId : req.params.publicId,
+            // uploadedBy : req.userInfo.userId
+        })
+        if(image.length>0){
+            res.status(200).json({
+                success : true,
+                data : image
+            })
+        }else{
+            res.status(444).json({
+                success : false,
+                message : 'Image not found'
+            })
+        }
+    }catch(error){
+        console.log(error);
+        res.status(404).json({
+            success : false,
+            message : 'Error fetching image'
+        })
+    }
+} 
 module.exports = {
-    uploadImageController
+    uploadImageController,
+    fetchingImageController
 };

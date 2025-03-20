@@ -5,7 +5,12 @@ const path = require('path');
 // set our multer storage 
 const storage = multer.diskStorage({
     destination :function(req,file,cb){
-        cb(null,"uploads/");
+        const uploadPath = 'uploads/';
+        // if (!fs.existsSync(uploadPath)) {
+        //     fs.mkdirSync(uploadPath);
+        // }
+        console.log(uploadPath);
+        cb(null,uploadPath);
     },
     filename : function(req,file,cb){
         cb(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname)
@@ -18,8 +23,8 @@ const checkFileFilter = (req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
         cb(null, true)
     }else{
-        console.log('Not and image ! please upload only images')
-        cb(new Error('Not and image ! please upload only images'))
+        console.log('Not and image! please upload only images')
+        cb(new Error('Not and image! please upload only images'))
     }
 }
 // multer middleware

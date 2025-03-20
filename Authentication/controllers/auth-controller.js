@@ -48,7 +48,7 @@ const registerUser = async(req,res)=>{
             message: 'Registration failed > Please try again',
         })  
     }
-}
+};
 
 // login controller
 const loginUser = async(req, res)=>{
@@ -91,9 +91,51 @@ const loginUser = async(req, res)=>{
             message: 'Login Failed',
         })  
     }
+};
+
+const changePassword = async (req,res) =>{
+    try{
+        const userId = req.userInfo.userId;
+        const {oldPassword,newPassword} = req.body;
+
+        const user  = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            })
+        }
+        if(oldPassword===newPassword){
+            return res.status(400).json({
+                success: false,
+                message: 'New password cannot be same as old password',
+            })
+        }
+        // check if old password is correct
+        const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid old password',
+            })
+        }
+        // hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const newHashedPassword = await bcrypt.hash(newPassword,salt);
+        user.password = newHashedPassword;
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: 'Password changed successfully',
+        })
+    }catch(err) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to change password',
+            error: err.message
+        })
+    }
 }
 
 
-
-
-module.exports = {registerUser,loginUser}
+module.exports = {registerUser,loginUser,changePassword}
