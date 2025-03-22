@@ -40,6 +40,22 @@ const uploadImageController = async(req, res )=>{
 }
 const fetchingImageController = async (req,res)=>{
     try{
+
+        // this block explains the concept of the pagination
+
+        // const page = parseInt(req.query.page) || 1;
+        // const limit = parseInt(req.query.limit) || 5;
+        // const skip = (page -1)*limit;
+        // const sortBy = req.query.sortBy || 'createdAt';
+        // const sortOrder = req.query.sortOrder === 'asc';
+        // const totalImages = await Image.countDocuments({});
+        // const totalPages = Math.ceil(totalImages /limit);
+        // const sortObj = {};
+        // sortObj[sortBy] = sortOrder;
+        // const images = await Image.find({}).sort(sortObj).skip(skip).limit;
+
+        // ----------------------------------------------------------
+
         const image = await Image.find({
             publicId : req.params.publicId,
             // uploadedBy : req.userInfo.userId

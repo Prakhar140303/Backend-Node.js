@@ -1,0 +1,16 @@
+const Product = requrire('../Product.js');
+
+const insertSampleProduct= async (req,res)=>{
+    try{
+        console.log("Inserting sample");
+        res.status(200).json({
+            success: true
+        });
+    }catch(e){
+        console.log(e);
+        res.status(404).json({
+            success : false,
+            message : 'some eror occured'
+        })
+    }
+}
