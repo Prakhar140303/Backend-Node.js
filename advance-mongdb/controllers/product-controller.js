@@ -1,4 +1,4 @@
-const Product = requrire('../Product.js');
+const Product = require('../Product.js');
 
 const insertSampleProduct= async (req,res)=>{
     try{
@@ -53,4 +53,28 @@ const insertSampleProduct= async (req,res)=>{
         })
     }
 }
-module.exports = {insertSampleProduct};
+const getProductStats = async(req,res)=>{
+  try{
+    console.log(req.query.greater)
+    console.log(req.query.inStock)
+    const result = await Product.aggregate([
+      {$match :{
+        inStock : req.query.inStock === "true"  ? true : false, 
+        price: {
+          $gte : parseInt(req.query.greater)
+        }
+      }}
+    ]);
+    res.status(200).json({
+      success : true,
+      data : result
+    })
+  }catch(err){
+    console.log(err);
+    res.status(404).json({
+      success : false,
+      message : 'Error fetching product stats'
+    })
+  }
+}
+module.exports = {insertSampleProduct,getProductStats};
