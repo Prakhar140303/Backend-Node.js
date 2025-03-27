@@ -77,4 +77,25 @@ const getProductStats = async(req,res)=>{
     })
   }
 }
-module.exports = {insertSampleProduct,getProductStats};
+const getProductAnalysis = async (req,res)=>{
+  try{
+    const result = await Product.aggregate([
+      {
+        $match : {
+          category : 'Electronics',
+        }
+      }
+    ])
+    res.status(200).json({
+      success : true,
+      data : result
+    })
+  }catch(err){
+    console.log(err);
+    res.status(404).json({
+      success : false,
+      message : 'Error fetching product analysis'
+    })
+  }
+}
+module.exports = {insertSampleProduct,getProductStats,getProductAnalysis};
