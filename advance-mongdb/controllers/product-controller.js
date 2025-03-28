@@ -84,6 +84,32 @@ const getProductAnalysis = async (req,res)=>{
         $match : {
           category : 'Electronics',
         }
+      },
+      {
+        $group: {
+          _id : null,
+          totalRevenue :{
+            $avg: "$price"
+          },
+          maxProductPrice : {
+            $max : "$price"
+          },
+          minProductPrice : {
+            $min : "$price"
+          }
+        }
+      },
+      {
+        $project :{
+          _id : 1,
+          totalRevenue : 1,
+          averagePrice : 1,
+          maxProductPrice : 1,
+          minProductPrice : 1,
+          priceRange :{
+            $subtract : ["$maxProductPrice" ,"$minProductPrice"]
+          }
+        }
       }
     ])
     res.status(200).json({
