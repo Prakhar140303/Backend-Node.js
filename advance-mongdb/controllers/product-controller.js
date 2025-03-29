@@ -1,4 +1,4 @@
-const Product = require('../Product.js');
+const Product = require('../models/Product.js');
 
 const insertSampleProduct= async (req,res)=>{
     try{
@@ -103,7 +103,7 @@ const getProductAnalysis = async (req,res)=>{
         $project :{
           _id : 1,
           totalRevenue : 1,
-          averagePrice : 1,
+          averagePrice : 1, 
           maxProductPrice : 1,
           minProductPrice : 1,
           priceRange :{
